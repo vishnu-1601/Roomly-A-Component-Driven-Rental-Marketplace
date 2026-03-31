@@ -1,0 +1,32 @@
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WanderLust</title>
+</head> -->
+<%- layout("/layouts/boilerplate.ejs") %>
+<body>
+    <h2>All Listings</h2>
+    <!-- <form action="/listings/new" method="get">
+        <button>create new list</button>
+    </form> -->
+    <br>
+    <div class="row row-cols-lg-4 row-cols-md-2 row-col-md-1">
+        <% for(let list of allListings){ %>
+            <a href="/listings/<%=list._id%>" class="listing-link">
+                <div class="card">
+                    <img src="<%=list.image.url%>" class="card-img-top" alt="listing_image" style="height: 15rem;">
+                    <div class="card-img-overlay"><i class="fa-regular fa-heart"></i></div>
+                    <div class="card-body">
+                        <p class="card-text">
+                            <b><%=list.title%></b> <br>
+                            &#8377;<%=list.price.toLocaleString("en-IN")%>/night
+                        </p>
+                    </div>
+                </div>
+            </a>
+        <%}%>
+    </div>
+</body>
+<!-- </html> -->

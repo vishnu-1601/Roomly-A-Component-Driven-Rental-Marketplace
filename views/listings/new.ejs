@@ -1,0 +1,37 @@
+<%- layout("/layouts/boilerplate.ejs") %>
+<div class="row">
+    <div class="col-8 offset-2">
+    <h2 style="text-align: center;"><b>Create New List</b></h2>
+    <form action="/listings" method="post">
+        <div class="mb-3">
+            <label for="title" class="form-label"><b><i>Title</i></b></label>
+            <input type="text" placeholder="Add a catchy title" name="listing[title]" class="form-control" id="title">
+        </div>
+        <div class="mb-3">
+            <label for="description" class="form-label"><b><i>Description</i></b></label>
+            <textarea name="listing[description]" placeholder="write here..." id="description" class="form-control" rows="5"></textarea>
+        </div>
+        <div class="mb-3">
+            <label for="img" class="form-label"><b><i>Image</i></b></label>
+            <input type="url" name="listing[image]" placeholder="enter image url/link" id="img" class="form-control">
+        </div>
+        <div class="row">
+            <div class="mb-3 col-md-4">
+                <label for="price" class="form-label"><b><i>Price</i></b></label>
+                <input  placeholder="enter price" type="number" name="listing[price]" class="form-control" id="price">
+            </div>
+            <div class="mb-3 col-md-8">
+                <label for="country" class="form-label"><b><i>Country</i></b></label>
+                <input type="text" placeholder="enter country" name="listing[country]" class="form-control" id="country">
+            </div>
+        </div>
+        <div class="mb-3">
+            <label for="location" class="form-label"><b><i>Location</i></b></label>
+            <input type="text" placeholder="enter location" name="listing[location]" class="form-control" id="location">
+        </div>
+        <div>
+            <button class="btn btn-primary add-btn">create</button>
+        </div>
+    </form>
+    </div>
+</div>
