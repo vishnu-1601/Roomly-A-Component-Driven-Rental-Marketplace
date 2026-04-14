@@ -1,6 +1,6 @@
 # 🏡 Roomly - A Component-Driven Rental Marketplace
 
-A modular, full-stack rental marketplace built using Node.js, Express, MongoDB, and EJS with a fully responsive UI.
+Developing a modular, full-stack rental marketplace using the MERN stack with a fully responsive and user-friendly interface.
 
 ---
 
