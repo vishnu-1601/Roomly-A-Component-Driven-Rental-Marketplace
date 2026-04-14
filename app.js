@@ -71,7 +71,7 @@ app.get("/listings/:id",wrapAsync(async (req,res) => {
 //Create route
 app.post("/listings",wrapAsync(async (req,res,next) => {
         if(!req.body || !req.body.listing){
-            throw new ExpressError(400,"Invalid listing data");
+            throw new ExpressError(400,"send valid data for listing");
         }
         if(!req.body.listing.image || !req.body.listing.image.url || req.body.listing.image.url.trim()===""){
             const randomImages = [
@@ -98,8 +98,11 @@ app.get("/listings/:id/edit",wrapAsync(async (req,res) =>{
     res.render("./listings/edit.ejs",{listing});
 }));
 
-//put route after edit page submit
+//put route after edit page submit (update route)
 app.put("/listings/:id",wrapAsync( async (req,res) =>{
+    if(!req.body || !req.body.listing){
+        throw new ExpressError(400,"send valid data for listing");
+    }
     let {id}=req.params;
     //if image field exists
     if(req.body.listing.image && req.body.listing.image.url){
@@ -130,5 +133,6 @@ app.all(/.*/,(req,res,next) => {
 });
 app.use((err,req,res,next) => {
     let {statusCode=500,message="Something went wrong"}=err;
-    res.status(statusCode).send(message);
+    // res.status(statusCode).send(message);
+    res.render("./listings/error.ejs",{message : message});
 });
