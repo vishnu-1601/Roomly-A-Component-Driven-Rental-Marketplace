@@ -2,32 +2,81 @@
 <div class="row">
     <div class="col-8 offset-2">
     <h2 style="text-align: center;"><b>Create New List</b></h2>
-    <form action="/listings" method="post">
+    <form action="/listings" method="post" class="needs-validation" novalidate>
         <div class="mb-3">
             <label for="title" class="form-label"><b><i>Title</i></b></label>
-            <input type="text" placeholder="Add a catchy title" name="listing[title]" class="form-control" id="title">
+            <input type="text" placeholder="enter title" name="listing[title]" class="form-control" id="title" required>
+            <div class="valid-feedback">
+                Looks good!
+            </div>
+            <div class="invalid-feedback">
+                Please enter a title.
+            </div>
         </div>
         <div class="mb-3">
             <label for="description" class="form-label"><b><i>Description</i></b></label>
-            <textarea name="listing[description]" placeholder="write here..." id="description" class="form-control" rows="5"></textarea>
+            <textarea name="listing[description]" placeholder="enter description.." id="description" class="form-control" rows="5" required></textarea>
+            <div class="valid-feedback">
+                Looks good!
+            </div>
+            <div class="invalid-feedback">
+                Please enter a description.
+            </div>
         </div>
         <div class="mb-3">
             <label for="img" class="form-label"><b><i>Image</i></b></label>
-            <input type="url" name="listing[image]" placeholder="enter image url/link" id="img" class="form-control">
+            <input type="url" name="listing[image][url]" placeholder="enter image link" id="img" class="form-control" required>
+            <div class="valid-feedback">
+                Looks good!
+            </div>
+            <div class="invalid-feedback">
+                Please enter a valid link.
+            </div>
         </div>
         <div class="row">
             <div class="mb-3 col-md-4">
                 <label for="price" class="form-label"><b><i>Price</i></b></label>
-                <input  placeholder="enter price" type="number" name="listing[price]" class="form-control" id="price">
+                <input  placeholder="enter price" name="listing[price]" class="form-control" id="price" required>
+                <div class="valid-feedback">
+                    Looks good!
+                </div>
+                <div class="invalid-feedback">
+                    Please enter a price.
+                </div>
             </div>
             <div class="mb-3 col-md-8">
                 <label for="country" class="form-label"><b><i>Country</i></b></label>
-                <input type="text" placeholder="enter country" name="listing[country]" class="form-control" id="country">
+                <input list="countries" name="listing[country]" class="form-control" placeholder="enter country" required>
+                <datalist id="countries">
+                    <option value="India">
+                    <option value="United States">
+                    <option value="Canada">
+                    <option value="Australia">
+                    <option value="Germany">
+                </datalist>
+                <div class="valid-feedback"> 
+                    Looks good!
+                </div>
+                <div class="invalid-feedback">
+                    Please enter a valid country.
+                </div>
             </div>
         </div>
         <div class="mb-3">
             <label for="location" class="form-label"><b><i>Location</i></b></label>
-            <input type="text" placeholder="enter location" name="listing[location]" class="form-control" id="location">
+            <input list="locations" name="listing[location]" class="form-control" placeholder="enter location" required>
+            <datalist id="locations">
+                <option value="Delhi">
+                <option value="Mumbai">
+                <option value="New York">
+                <option value="London">
+            </datalist>
+            <div class="valid-feedback">
+                Looks good!
+            </div>
+            <div class="invalid-feedback">
+                Please enter a valid location.
+            </div>
         </div>
         <div>
             <button class="btn btn-primary add-btn">create</button>

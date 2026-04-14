@@ -9,7 +9,7 @@
             <div class="card-text">
                 <b><%=listing.title%></b><br>
                 <%=listing.description%> <br>
-                <%=listing.price.toLocaleString("en-IN")%> <br>
+                <%=(listing.price ?? 0).toLocaleString("en-IN")%> <br>
                 <%=listing.location%> <br>
                 <%=listing.country%>
                 <div class="show-btn mt-2">

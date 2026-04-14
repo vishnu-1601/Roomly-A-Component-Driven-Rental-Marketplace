@@ -10,8 +10,13 @@ const  listingSchema=new Schema({
         filename : String,
         url : String
     },
-    price : Number,
-    location : String,
+    price : {
+        type:Number,
+        min:0
+    },
+    location : {
+        type:String,
+    },
     country : String
 });
 const Listing=mongoose.model("Listing",listingSchema);
