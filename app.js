@@ -8,6 +8,7 @@ const ejsMate=require("ejs-mate");
 const { nextTick } = require("process");
 const wrapAsync=require("./utils/wrapAsync");
 const ExpressError=require("./utils/ExpressError");
+const {listingSchema}=require("./schema");
 
 app.set("view engine","ejs");
 app.set("views",path.join(__dirname,"views"));
@@ -70,9 +71,33 @@ app.get("/listings/:id",wrapAsync(async (req,res) => {
 
 //Create route
 app.post("/listings",wrapAsync(async (req,res,next) => {
-        if(!req.body || !req.body.listing){
-            throw new ExpressError(400,"send valid data for listing");
+        // const data=req.body.listing;
+        // if(!req.body || !data){
+        //     throw new ExpressError(400,"send valid data for listing");
+        // }
+        // if(!data.title || data.title.trim()==""){
+        //     throw new ExpressError(400,"Title is required");
+        // }
+        // if(!data.description || data.description.trim()==""){
+        //     throw new ExpressError(400,"Description is required");
+        // }
+        // if(!data.location || data.location.trim()==""){ 
+        //     throw new ExpressError(400,"Location is required");
+        // }
+        // if(!data.country || data.country.trim()==""){
+        //     throw new ExpressError(400,"Country is required");
+        // }
+        // if(data.price===undefined || data.price<0){
+        //     throw new ExpressError(400,"Price must be a non-negative number");
+        // }
+
+        // joi validation tool
+        const result=listingSchema.validate(req.body);
+        console.log(result);
+        if(result.error){
+            throw new ExpressError(400,result.error.details[0].message);
         }
+
         if(!req.body.listing.image || !req.body.listing.image.url || req.body.listing.image.url.trim()===""){
             const randomImages = [
                 "https://picsum.photos/300?random=1",
@@ -85,7 +110,12 @@ app.post("/listings",wrapAsync(async (req,res,next) => {
                 filename : "default-image",
                 url:randomImages[ridx]
             };
-        };
+        }else{
+            data.image = {
+                filename: "listingimage",
+                url: req.body.listing.image.url
+            };
+        }
         let newListing=new Listing(req.body.listing);
         await newListing.save();
         res.redirect("/listings");
@@ -135,4 +165,4 @@ app.use((err,req,res,next) => {
     let {statusCode=500,message="Something went wrong"}=err;
     // res.status(statusCode).send(message);
     res.render("./listings/error.ejs",{message : message});
-});
+})
