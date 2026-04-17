@@ -33,6 +33,18 @@ app.get("/", (req,res) => {
     res.send("Hi, I am root");
 })
 
+//joi validation as middleware
+const validateListing=(req,res,next) => {
+        const result=listingSchema.validate(req.body);
+        console.log(result);
+        if(result.error){
+            // let errmsg=error.details.map((el) => el.message).join(",");       //mapping all errors, separate by comma
+            throw new ExpressError(400,result.error.details[0].message);
+        }else{
+            next();
+        }
+    }
+
 // app.get("/testListing",async (req,res) => {
 //     let sampleListing=new Listing({
 //         title : "My New Villa",
@@ -45,11 +57,6 @@ app.get("/", (req,res) => {
 //     console.log(sampleListing);
 //     res.send("Successful Testing!");
 // });
-
-app.post("/test", (req, res) => {
-    console.log("TEST HIT");
-    res.send("Working");
-});
 
 //Index route
 app.get("/listings",wrapAsync( async (req,res) => {
@@ -70,7 +77,7 @@ app.get("/listings/:id",wrapAsync(async (req,res) => {
 }));
 
 //Create route
-app.post("/listings",wrapAsync(async (req,res,next) => {
+app.post("/listings",validateListing,wrapAsync(async (req,res,next) => {
         // const data=req.body.listing;
         // if(!req.body || !data){
         //     throw new ExpressError(400,"send valid data for listing");
@@ -90,13 +97,6 @@ app.post("/listings",wrapAsync(async (req,res,next) => {
         // if(data.price===undefined || data.price<0){
         //     throw new ExpressError(400,"Price must be a non-negative number");
         // }
-
-        // joi validation tool
-        const result=listingSchema.validate(req.body);
-        console.log(result);
-        if(result.error){
-            throw new ExpressError(400,result.error.details[0].message);
-        }
 
         if(!req.body.listing.image || !req.body.listing.image.url || req.body.listing.image.url.trim()===""){
             const randomImages = [
@@ -122,14 +122,14 @@ app.post("/listings",wrapAsync(async (req,res,next) => {
 }));
 
 //edit route
-app.get("/listings/:id/edit",wrapAsync(async (req,res) =>{
+app.get("/listings/:id/edit",validateListing,wrapAsync(async (req,res) =>{
     let {id} = req.params;
     const listing=await Listing.findById(id);
     res.render("./listings/edit.ejs",{listing});
 }));
 
 //put route after edit page submit (update route)
-app.put("/listings/:id",wrapAsync( async (req,res) =>{
+app.put("/listings/:id",validateListing,wrapAsync( async (req,res) =>{
     if(!req.body || !req.body.listing){
         throw new ExpressError(400,"send valid data for listing");
     }
