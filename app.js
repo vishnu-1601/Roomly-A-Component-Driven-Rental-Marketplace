@@ -8,12 +8,14 @@ const ejsMate=require("ejs-mate");
 const { nextTick } = require("process");
 const wrapAsync=require("./utils/wrapAsync");
 const ExpressError=require("./utils/ExpressError");
-const {listingSchema}=require("./schema");
+const {listingSchema, reviewSchema}=require("./schema");
+const Review=require("./models/review");
 
 app.set("view engine","ejs");
 app.set("views",path.join(__dirname,"views"));
 app.use(express.urlencoded({extended : true}));
-app.use(express.json());
+app.use(express.json())
+;
 app.use(methodOverride("_method"));
 app.engine("ejs",ejsMate);
 app.use(express.static(path.join(__dirname,"public")));
@@ -24,7 +26,11 @@ app.listen(port,() => {
 })
 
 const Mongo_url='mongodb://127.0.0.1:27017/wanderlust';
-main().then(() => console.log("Connected to MongoDB")).catch(err => console.log(err));
+// main().then(() => console.log("Connected to MongoDB")).catch(err => console.log(err));
+main().then(async () => {
+    console.log("Connected to MongoDB");
+}).catch(err => console.log(err));
+
 async function main() {
     await mongoose.connect(Mongo_url);
 }
@@ -36,7 +42,6 @@ app.get("/", (req,res) => {
 //joi validation as middleware
 const validateListing=(req,res,next) => {
         const result=listingSchema.validate(req.body);
-        console.log(result);
         if(result.error){
             // let errmsg=error.details.map((el) => el.message).join(",");       //mapping all errors, separate by comma
             throw new ExpressError(400,result.error.details[0].message);
@@ -44,6 +49,18 @@ const validateListing=(req,res,next) => {
             next();
         }
     }
+    
+const validateReview = (req, res, next) => {
+    // Guard: treat missing body as empty object so Joi can catch it
+    const bodyToValidate = req.body || {};
+    const { error } = reviewSchema.validate(bodyToValidate);
+    if (error) {
+        let errmsg = error.details.map(el => el.message).join(",");
+        throw new ExpressError(400, errmsg);
+    } else {
+        next();
+    }
+}; 
 
 // app.get("/testListing",async (req,res) => {
 //     let sampleListing=new Listing({
@@ -72,7 +89,7 @@ app.get("/listings/new",(req,res) => {
 //Show route
 app.get("/listings/:id",wrapAsync(async (req,res) => {
     let {id} = req.params;
-    const listing=await Listing.findById(id);
+    const listing=await Listing.findById(id).populate("reviews");
     res.render("./listings/show.ejs",{listing});
 }));
 
@@ -150,6 +167,20 @@ app.delete("/listings/:id",wrapAsync( async (req,res) => {
     let deletedList=await Listing.findByIdAndDelete(id);
     console.log(deletedList);
     res.redirect("/listings");
+}));
+
+//Reviews
+//post route
+app.post("/listings/:id/reviews", validateReview, wrapAsync(async (req, res) => {
+    let listing = await Listing.findById(req.params.id);
+    if (!listing) {
+        throw new ExpressError(404, "Listing not found!");
+    }
+    let newReview = new Review(req.body.review);
+    listing.reviews.push(newReview);
+    await newReview.save();
+    await listing.save();
+    res.redirect(`/listings/${listing._id}`);
 }));
 
 //custom error handling
