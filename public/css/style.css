@@ -52,7 +52,7 @@ body{
     flex-wrap: wrap;
     justify-content: center;
 }
-.card{
+.listing-card{
     border: none !important;
     background-color: transparent !important;
     margin-bottom: 1.5rem;
